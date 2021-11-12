@@ -5,14 +5,58 @@
 /* 10 Points */
 void ALU(unsigned A,unsigned B,char ALUControl,unsigned *ALUresult,char *Zero)
 {
+    //create switch statements for alu operations
 
+    switch (ALUControl)
+    {
+    case 0:
+        //perform addition
+        break;
+    
+    case 1:
+
+        //subtraction
+        break;
+    case 2:
+
+        //if A < B, Z = 1; otherwise, Z = 0 
+        break;
+    
+    case 3:
+        //if A < B, Z = 1; otherwise, Z = 0 (A and B are unsigned integers)
+        break;
+    case 4:
+        //Z = A AND B 
+        break;
+    case 5:
+        //Z = A OR B 
+        break;
+    case 6:
+        //Z = Shift B left by 16 bits 
+        break;
+    case 7:
+        //Z = NOT A 
+        break;
+    default:
+        break;
+    }
+
+    if(ALUresult == 0){
+        Zero = 1;
+    }
 }
 
 /* instruction fetch */
 /* 10 Points */
 int instruction_fetch(unsigned PC,unsigned *Mem,unsigned *instruction)
 {
-
+    //need to divide pc by four to get the index for mem
+    if(PC>>2 > 65536>>2){
+        return 1;
+    }
+    
+    instruction = Mem[PC/4];
+    return 0;
 }
 
 
@@ -73,6 +117,9 @@ void write_register(unsigned r2,unsigned r3,unsigned memdata,unsigned ALUresult,
 /* 10 Points */
 void PC_update(unsigned jsec,unsigned extended_value,char Branch,char Jump,char Zero,unsigned *PC)
 {
+    //to access proper memory index need to divide pc by four 
+
+    
 
 }
 
