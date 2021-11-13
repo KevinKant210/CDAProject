@@ -5,6 +5,8 @@
 /* 10 Points */
 void ALU(unsigned A,unsigned B,char ALUControl,unsigned *ALUresult,char *Zero)
 {
+    //Wondering if we need to worry about the overflow during operations
+
     //create switch statements for alu operations
 
     switch (ALUControl)
@@ -17,6 +19,7 @@ void ALU(unsigned A,unsigned B,char ALUControl,unsigned *ALUresult,char *Zero)
     
     case 1:
 
+        
         //subtraction
 
         *ALUresult = A-B;
@@ -83,7 +86,10 @@ int instruction_fetch(unsigned PC,unsigned *Mem,unsigned *instruction)
 void instruction_partition(unsigned instruction, unsigned *op, unsigned *r1,unsigned *r2, unsigned *r3, unsigned *funct, unsigned *offset, unsigned *jsec)
 {
     //implement some form of bit masking to extract the bits from istruction
-
+    
+    //R-format  OP (6 bit) - RS 5 bit - rt 5bit - rd 5 bit - shamt 5 bit - funct 6 bit
+    //I-format op 6 bit - rs 5 bit - rt 5 bit - address/immediate 16 bits
+    //J format op 6bits - target address 26 bits
     
 }
 
