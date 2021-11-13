@@ -11,31 +11,49 @@ void ALU(unsigned A,unsigned B,char ALUControl,unsigned *ALUresult,char *Zero)
     {
     case 0:
         //perform addition
+        *ALUresult = A + B;
+
         break;
     
     case 1:
 
         //subtraction
+
+        *ALUresult = A-B;
         break;
     case 2:
 
         //if A < B, Z = 1; otherwise, Z = 0 
+        if(A < B){
+             *ALUresult = 1;
+        }else{
+            *ALUresult = 0;
+        }
         break;
     
     case 3:
         //if A < B, Z = 1; otherwise, Z = 0 (A and B are unsigned integers)
+        if(A < B){
+             *ALUresult = 1;
+        }else{
+            *ALUresult = 0;
+        }
         break;
     case 4:
-        //Z = A AND B 
+        //Z = A AND B
+        *ALUresult = A & B; 
         break;
     case 5:
         //Z = A OR B 
+        *ALUresult = A | B;
         break;
     case 6:
-        //Z = Shift B left by 16 bits 
+        //Z = Shift B left by 16 bits
+        *ALUresult = B<<16;
         break;
     case 7:
         //Z = NOT A 
+        *ALUresult = ~A;
         break;
     default:
         break;
@@ -55,7 +73,7 @@ int instruction_fetch(unsigned PC,unsigned *Mem,unsigned *instruction)
         return 1;
     }
     
-    instruction = Mem[PC/4];
+    *instruction = Mem[PC/4];
     return 0;
 }
 
@@ -64,7 +82,9 @@ int instruction_fetch(unsigned PC,unsigned *Mem,unsigned *instruction)
 /* 10 Points */
 void instruction_partition(unsigned instruction, unsigned *op, unsigned *r1,unsigned *r2, unsigned *r3, unsigned *funct, unsigned *offset, unsigned *jsec)
 {
+    //implement some form of bit masking to extract the bits from istruction
 
+    
 }
 
 
