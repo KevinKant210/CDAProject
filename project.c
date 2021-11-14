@@ -94,7 +94,26 @@ void instruction_partition(unsigned instruction, unsigned *op, unsigned *r1,unsi
         Partition instruction into several parts (op, r1, r2, r3, funct, offset, jsec). 
         2.  Read line 41 to 47 of spimcore.c for more information.
     */
+
+   // mask for op code 11111100000000000000000000000000
+   unsigned maskOpcode = 0xFC000000;
+   
+   unsigned opCode = maskOpcode & instruction;
+
+   if(opCode == 0){
+       //r-format instruciton
+        //bit mask for rs 00000011111000000000000000000000
+        
+        //unsigned maskRS = 
+
+   }else if(opCode > 3){
+
+       // I format instruction
+   }else{
+       //j format instruction
+   }
     
+
 }
 
 
