@@ -87,6 +87,10 @@ void instruction_partition(unsigned instruction, unsigned *op, unsigned *r1,unsi
 {
     //implement some form of bit masking to extract the bits from istruction
     
+    //Jsec is address 
+    //func is function for R-format
+    //offset is constant/address for I types
+
     //R-format  OP (6 bit) - RS 5 bit - rt 5bit - rd 5 bit - shamt 5 bit - funct 6 bit // 0 opccode
     //I-format op 6 bit - rs 5 bit - rt 5 bit - address/immediate 16 bits   //opcode > 3
     //J format op 6bits - target address 26 bits    //opcode of 2 or 3
@@ -107,17 +111,24 @@ void instruction_partition(unsigned instruction, unsigned *op, unsigned *r1,unsi
         unsigned maskRS = fromBinary("00000011111000000000000000000000", 32);
         unsigned maskRT = fromBinary("00000000000111110000000000000000",32);
         unsigned maskRD = fromBinary("0000000000000000111110000000000",32);
-        unsigned maskShamt = fromBinary("00000000000000000000011111000000",32);
+        //no shamt pointer so assume this is unneccesary
+        //unsigned maskShamt = fromBinary("00000000000000000000011111000000",32);
         unsigned maskFunct = fromBinary("00000000000000000000000000111111",32);
 
         
-    
+        *r1 = (maskRS & instruction) >> (32-11);
+        *r2 = (maskRT & instruction) >> (32-16);
+        *r3 = (maskRD & instruction) >> (32-21);
+
+        *funct = (maskFunct & instruction) >> (32-26);
 
 
 
    }else if(opCode > 3){
 
        // I format instruction
+       
+
    }else{
        //j format instruction
    }
