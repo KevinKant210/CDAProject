@@ -87,7 +87,7 @@ void instruction_partition(unsigned instruction, unsigned *op, unsigned *r1,unsi
 {
     //implement some form of bit masking to extract the bits from istruction
     
-    //Jsec is address 
+    //Jsec is address for j types
     //func is function for R-format
     //offset is constant/address for I types
 
@@ -103,7 +103,7 @@ void instruction_partition(unsigned instruction, unsigned *op, unsigned *r1,unsi
    unsigned maskOpcode = fromBinary("11111100000000000000000000000000", 32);
    
    //remeber to shift the bits over!
-   unsigned opCode = (maskOpcode & instruction) >> (32-6);
+   unsigned opCode = (maskOpcode & instruction) >> (32-26);
 
    if(opCode == 0){
        //r-format instruciton
@@ -116,21 +116,30 @@ void instruction_partition(unsigned instruction, unsigned *op, unsigned *r1,unsi
         unsigned maskFunct = fromBinary("00000000000000000000000000111111",32);
 
         
-        *r1 = (maskRS & instruction) >> (32-11);
+        *r1 = (maskRS & instruction) >> (32-21);
         *r2 = (maskRT & instruction) >> (32-16);
-        *r3 = (maskRD & instruction) >> (32-21);
-
-        *funct = (maskFunct & instruction) >> (32-26);
+        *r3 = (maskRD & instruction) >> (32-11);
+        //at the end so no need to shift
+        *funct = (maskFunct & instruction);
 
 
 
    }else if(opCode > 3){
 
        // I format instruction
-       
+        unsigned maskRS = fromBinary("00000011111000000000000000000000", 32);
+        unsigned maskRT = fromBinary("00000000000111110000000000000000",32);
+        unsigned maskAddress = fromBinary("00000000000000001111111111111111",32);
 
+        *r1 = (maskRS & instruction) >> (32-21);
+        *r2 = (maskRT & instruction) >> (32-16);
+        //at the end so no need to shift
+        *offset = (maskAddress & instruction);
    }else{
        //j format instruction
+       unsigned maskAddressLong = fromBinary("00000011111111111111111111111111",32);
+        //at the end so no need to shift
+        *jsec = (maskAddressLong & instruction);
    }
     
 
