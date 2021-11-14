@@ -96,15 +96,24 @@ void instruction_partition(unsigned instruction, unsigned *op, unsigned *r1,unsi
     */
 
    // mask for op code 11111100000000000000000000000000
-   unsigned maskOpcode = 0xFC000000;
+   unsigned maskOpcode = fromBinary("11111100000000000000000000000000", 32);
    
-   unsigned opCode = maskOpcode & instruction;
+   //remeber to shift the bits over!
+   unsigned opCode = (maskOpcode & instruction) >> (32-6);
 
    if(opCode == 0){
        //r-format instruciton
         //bit mask for rs 00000011111000000000000000000000
+        unsigned maskRS = fromBinary("00000011111000000000000000000000", 32);
+        unsigned maskRT = fromBinary("00000000000111110000000000000000",32);
+        unsigned maskRD = fromBinary("0000000000000000111110000000000",32);
+        unsigned maskShamt = fromBinary("00000000000000000000011111000000",32);
+        unsigned maskFunct = fromBinary("00000000000000000000000000111111",32);
+
         
-        //unsigned maskRS = 
+    
+
+
 
    }else if(opCode > 3){
 
@@ -206,3 +215,18 @@ void PC_update(unsigned jsec,unsigned extended_value,char Branch,char Jump,char 
 
 }
 
+//ADDED FUNCTION TO HELP WITH BIT MASKING
+unsigned fromBinary(char* bit,int n){
+    
+    unsigned value = 0;
+
+    for(int i = 0 ; i < n; i++){
+        
+       if(bit[i] == '1'){
+           
+           value += (1 << (n-i-1));
+       }
+    }
+
+    return value;
+}
