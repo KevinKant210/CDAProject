@@ -76,7 +76,7 @@ int instruction_fetch(unsigned PC,unsigned *Mem,unsigned *instruction)
         return 1;
     }
     
-    *instruction = Mem[PC/4];
+    *instruction = Mem[PC>>2];
     return 0;
 }
 
@@ -166,14 +166,53 @@ The following table shows the meaning of the values of ALUOp.
  
 3.  Return 1 if a halt condition occurs; otherwise, return 0. 
     */
+   
    switch (op)
    {
    case 0:
-
-       /* code */
+        //r-type so we make alu op 0
+       
+       controls->RegDst = 1;
+       controls->Jump = 0;
+       controls->Branch = 0;
+       controls->MemRead = 0;
+       controls->MemtoReg = 0;
+       controls->ALUOp = 7;
+       controls->MemWrite = 0;
+       controls->ALUSrc = 0;
+       controls->RegWrite = 1;
+    
        break;
+   case 0x8:
+        //add immediate is occuring
+        controls->RegDst = 0;
+        controls->Jump = 0;
+        controls->Branch = 0;
+        controls->MemRead = 0;
+        controls->MemtoReg = 0;
+        controls-> ALUOp = 0;
+        controls->MemWrite = 0;
+        controls->ALUSrc = 1;
+        controls->RegWrite = 1;
    
-   default:
+    case 35:
+        //a load word is occuring 100011
+        controls->RegDst = 0;
+        controls->Jump = 0;
+        controls->Branch = 0;
+        controls->MemRead = 1;
+        controls->MemWrite = 0;
+        controls->MemtoReg = 1;
+        controls->ALUOp = 0;
+        controls->ALUSrc = 1;
+        controls->RegWrite = 1;
+        break;
+    case 43:
+        //store word is occuring 101011
+        
+   case 2:
+        //a jump is occuring
+
        break;
    }
 

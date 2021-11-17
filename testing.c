@@ -6,7 +6,10 @@ int main(){
 
     int array[15];
     array[10] = 100;
-    testFunction(array);
+    
+    printf("%d", 0x8);
+
+
     return 0;
 }
 
