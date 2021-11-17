@@ -4,12 +4,9 @@ unsigned fromBinary(char* bit, int n);
 
 int main(){
 
-    char* bit;
-    bit = "0000";
-
-    unsigned result = fromBinary("1001",4);
-
-    printf("value: %d", result);
+    int array[15];
+    array[10] = 100;
+    testFunction(array);
     return 0;
 }
 
@@ -26,4 +23,9 @@ unsigned fromBinary(char* bit,int n){
     }
 
     return value;
+}
+
+void testFunction(int* array){
+
+    printf("%d", array[10]);
 }

@@ -185,6 +185,9 @@ void read_register(unsigned r1,unsigned r2,unsigned *Reg,unsigned *data1,unsigne
 {
     //Read the registers addressed by r1 and r2 from Reg, and write the read values 
     //to data1 and data2 respectively.
+
+    *data1 = Reg[r1];
+    *data2 = Reg[r2];
 }
 
 
@@ -193,6 +196,20 @@ void read_register(unsigned r1,unsigned r2,unsigned *Reg,unsigned *data1,unsigne
 void sign_extend(unsigned offset,unsigned *extended_value)
 {
     //Assign the sign-extended value of offset to extended_value. 
+    
+    // Shift the offset over 15 bits to find sign bit
+    unsigned sign = offset >> 15;
+    
+    // If the sign bit is 1 (value is negative)
+    // Then add 16 1 bits to the offset and return
+    if(sign == 1){
+        extended_value = (0xFFFF0000 | offset);
+        return;
+    }
+    
+    // The extended value will just equal the offset otherwise 
+    // as the first 16 bits are already 0's
+    extended_value = offset;
 }
 
 /* ALU operations */
