@@ -185,13 +185,18 @@ void sign_extend(unsigned offset,unsigned *extended_value)
 {
     //Assign the sign-extended value of offset to extended_value. 
     
-    // Shift the offset over 15 bits
+    // Shift the offset over 15 bits to find sign bit
     unsigned sign = offset >> 15;
+    
+    // If the sign bit is 1 (value is negative)
+    // Then add 16 1 bits to the offset and return
     if(sign == 1){
         extended_value = (0xFFFF0000 | offset);
         return;
     }
     
+    // The extended value will just equal the offset otherwise 
+    // as the first 16 bits are already 0's
     extended_value = offset;
 }
 
