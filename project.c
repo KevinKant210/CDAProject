@@ -170,7 +170,7 @@ The following table shows the meaning of the values of ALUOp.
    switch (op)
    {
    case 0:
-        //r-type so we make alu op 0
+        //r-type so we make alu op 7
        
        controls->RegDst = 1;
        controls->Jump = 0;
@@ -209,11 +209,81 @@ The following table shows the meaning of the values of ALUOp.
         break;
     case 43:
         //store word is occuring 101011
-        
-   case 2:
-        //a jump is occuring
+        controls->RegDst = 0;
+        controls->Jump = 0;
+        controls->Branch = 0;
+        controls->MemRead = 0;
+        controls->MemWrite = 1;
+        controls->MemtoReg = 0;
+        controls->ALUOp = 0;
+        controls->ALUSrc =1;
+        controls->RegWrite = 0;
+
+        break;
+    case 15:
+        //load upper immediate 001111
+        controls->RegDst = 0;
+        controls->Jump = 0;
+        controls->Branch = 0;
+        controls->MemRead = 0;
+        controls->MemWrite = 0;
+        controls->MemtoReg = 0;
+        controls->ALUOp = 6;
+        controls->ALUSrc = 1;
+        controls->RegWrite = 1;
+        break;
+    case 4:
+        //branch on equal 000100
+        controls->RegDst = 2;
+        controls->Jump = 0;
+        controls->Branch = 1;
+        controls->MemRead = 0;
+        controls->MemWrite = 0;
+        controls->MemtoReg = 2;
+        controls->ALUOp = 1;
+        controls->ALUSrc = 0;
+        controls->RegWrite = 0;
+        break;
+    case 10:
+        //set less than immediate 001010
+        controls->RegDst = 0;
+        controls->Jump = 0;
+        controls->Branch = 0;
+        controls->MemRead = 0;
+        controls->MemWrite = 0;
+        controls->MemtoReg = 0;
+        controls->ALUOp = 2;
+        controls->ALUSrc = 1;
+        controls->RegWrite = 1;
+        break;
+
+    case 11:
+        //set less than immediate unsigned 001011
+        controls->RegDst = 0;
+        controls->Jump = 0;
+        controls->Branch = 0;
+        controls->MemRead = 0;
+        controls->MemWrite = 0;
+        controls->MemtoReg = 0;
+        controls->ALUOp = 3;
+        controls->ALUSrc =1;
+        controls->RegWrite = 1;
+        break;
+    case 2:
+        //a jump is occuring 000010
+        controls->RegDst = 2;
+        controls->Jump = 1;
+        controls->Branch = 0;
+        controls->MemRead = 0;
+        controls->MemWrite = 0;
+        controls->MemtoReg = 0;
+        controls->ALUOp = 0;
+        controls->ALUSrc = 0;
+        controls->RegWrite = 0;
 
        break;
+    
+    
    }
 
 }
