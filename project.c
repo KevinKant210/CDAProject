@@ -121,7 +121,8 @@ void instruction_partition(unsigned instruction, unsigned *op, unsigned *r1,unsi
         *r3 = (maskRD & instruction) >> (32-11);
         //at the end so no need to shift
         *funct = (maskFunct & instruction);
-
+        //since R-type instruction the op code must become the function code
+        *op = *funct;
 
 
    }else if(opCode > 3){
@@ -134,7 +135,8 @@ void instruction_partition(unsigned instruction, unsigned *op, unsigned *r1,unsi
         *r1 = (maskRS & instruction) >> (32-21);
         *r2 = (maskRT & instruction) >> (32-16);
         //at the end so no need to shift
-        *offset = (maskAddress & instruction);
+        *offset = (maskAddress & instruction)
+        ;
    }else{
        //j format instruction
        unsigned maskAddressLong = fromBinary("00000011111111111111111111111111",32);
@@ -164,6 +166,16 @@ The following table shows the meaning of the values of ALUOp.
  
 3.  Return 1 if a halt condition occurs; otherwise, return 0. 
     */
+   switch (op)
+   {
+   case 0:
+
+       /* code */
+       break;
+   
+   default:
+       break;
+   }
 
 }
 
