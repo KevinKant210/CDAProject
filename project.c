@@ -340,14 +340,14 @@ int ALU_operations(unsigned data1,unsigned data2,unsigned extended_value,unsigne
     // Then do opperations using extended_value and based on function
     if(ALUSrc == 1){
         unsigned UsedData = extended_value;
-        unsigned maskCon = fromBinary("00000000000000000000000000000111",32);
-        unsigned UsedCon = (funct & maskCon);
+        unsigned UsedCon = (unsigned)ALUOp;
     }
     
     // else ALUSrc is deasserted so use data2 and do operations based on ALUOp
     else{
         unsigned UsedData = extended_value;
-        unsigned UsedCon = (unsigned)ALUOp;
+        unsigned maskCon = fromBinary("00000000000000000000000000000111",32);
+        unsigned UsedCon = (funct & maskCon);
     }
     
     ALU(data1, UsedData, UsedCon, *ALUresult, *Zero);
