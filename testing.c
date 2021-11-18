@@ -7,9 +7,11 @@ int main(){
     int array[15];
     array[10] = 100;
     
-    printf("%d", 0x8);
+    int number = 10;
+    int* value = &number;
+    testFunction(value);
 
-
+    printf("%d",number);
     return 0;
 }
 
@@ -28,7 +30,8 @@ unsigned fromBinary(char* bit,int n){
     return value;
 }
 
-void testFunction(int* array){
+void testFunction(int* value){
 
-    printf("%d", array[10]);
+    *value = 20;
+    return;
 }

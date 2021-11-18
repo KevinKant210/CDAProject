@@ -311,14 +311,16 @@ void sign_extend(unsigned offset,unsigned *extended_value)
     
     // If the sign bit is 1 (value is negative)
     // Then add 16 1 bits to the offset and return
+    //i think you need to put the deop character infront of extended value -> *
     if(sign == 1){
-        extended_value = (0xFFFF0000 | offset);
+        
+        *extended_value = (0xFFFF0000 | offset);
         return;
     }
     
     // The extended value will just equal the offset otherwise 
     // as the first 16 bits are already 0's
-    extended_value = offset;
+    *extended_value = offset;
 }
 
 /* ALU operations */
@@ -359,6 +361,7 @@ void write_register(unsigned r2,unsigned r3,unsigned memdata,unsigned ALUresult,
     /*
         1.  Write the data (ALUresult or memdata) to a register (Reg) addressed by r2 or r3. 
     */
+    
 
 }
 
