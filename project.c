@@ -368,17 +368,33 @@ int ALU_operations(unsigned data1,unsigned data2,unsigned extended_value,unsigne
 /* Read / Write Memory */
 /* 10 Points */
 int rw_memory(unsigned ALUresult,unsigned data2,char MemWrite,char MemRead,unsigned *memdata,unsigned *Mem)
-{
+{   
+    //ENSURE ALU RESULT MEMORY IS WITHIN THE BOUNDS AND A MULTIPLE OF 4 FOR WORDX ALIGNMENT
         /*
             1.  Use the value of MemWrite or MemRead to determine if a memory write 
     operation or memory read operation or neither is occurring. 
     2.  If reading from memory, read the content of the memory location addressed by 
     ALUresult to memdata. 
-
     3.  If writing to memory, write the value of data2 to the memory location 
     addressed by ALUresult. 
     4.  Return 1 if a halt condition occurs; otherwise, return 0.
         */
+
+    if(MemRead == 1){
+        if(ALUresult % 4 != 0 || ALUresult > 0xFFFF || ALUresult < 0x0000){
+            return 1;
+        }
+    }
+
+    if(MemWrite == 1){
+        if(ALUresult % 4 != 0 || ALUresult > 0xFFFF || ALUresult < 0x0000){
+            return 1;
+        }
+
+    }
+
+    
+
 }
 
 
@@ -389,6 +405,27 @@ void write_register(unsigned r2,unsigned r3,unsigned memdata,unsigned ALUresult,
     /*
         1.  Write the data (ALUresult or memdata) to a register (Reg) addressed by r2 or r3. 
     */
+
+   if(RegWrite == 0)return;
+
+   unsigned toWrite;
+   if(MemtoReg == 1){
+       toWrite = memdata;
+   }else{
+       toWrite = ALUresult;
+   }
+
+
+   
+
+   if(RegDst == 0){
+       //write to r2
+       Reg[r2] = toWrite;
+   }else{
+       //write to r3
+       Reg[r3] = toWrite;
+   }
+
     
 
 }
@@ -399,7 +436,13 @@ void PC_update(unsigned jsec,unsigned extended_value,char Branch,char Jump,char 
 {
     //1.  Update the program counter (PC). 
     //to access proper memory index need to divide pc by four 
-
+    if(Jump == 1){
+        *PC = jsec;
+    }else if(Branch == 1 && Zero == 1){
+        *PC = extended_value;
+    }else{
+        *PC += 4;
+    }
     
 
 }
