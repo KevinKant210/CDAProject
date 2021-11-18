@@ -312,25 +312,37 @@ int ALU_operations(unsigned data1,unsigned data2,unsigned extended_value,unsigne
     5.  Return 1 if a halt condition occurs; otherwise, return 0.
         */
     
+    unsigned UsedCon;
+    unsigned UsedData;
+    
     // If ALUSrc is asserted
     // Then do opperations using extended_value and based on function
     if(ALUSrc == 1){
-        unsigned UsedData = extended_value;
-        unsigned UsedCon = (unsigned)ALUOp;
+        UsedData = extended_value;
     }
     
     // else ALUSrc is deasserted so use data2 and do operations based on ALUOp
     else{
-        unsigned UsedData = data2;
+        UsedData = data2;
+    }
+    
+    // If this is a R type
+    // Then get the control from the function
+    if(ALUOp ==7){
         unsigned maskCon = fromBinary("00000000000000000000000000000111",32);
-        unsigned UsedCon = (funct & maskCon);
+        UsedCon = (maskCon & funct);
+    }
+    
+    // Else, use ALUOp as the Control
+    else{
+        UsedCon = ALUOp;
     }
     
     // An illegal instruction is encountered
     // UsedCon being the control
     // If it isn't between 0 and 7
     // Then it is illegal and will return 1 to halt
-    if(UsedCon > 7 || maskCon < 0){
+    if(UsedCon > 7 || UsedCon < 0){
         return 1
      }
 
