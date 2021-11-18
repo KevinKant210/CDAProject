@@ -71,8 +71,13 @@ void ALU(unsigned A,unsigned B,char ALUControl,unsigned *ALUresult,char *Zero)
 /* 10 Points */
 int instruction_fetch(unsigned PC,unsigned *Mem,unsigned *instruction)
 {
+    //make sure the address is word aligned ( aka a mulitple of 4)
     //need to divide pc by four to get the index for mem
-    if(PC>>2 > 65536>>2){
+    if(PC > 0xFFFF || PC < 0x0000){
+        return 1;
+    }
+
+    if(PC % 4 != 0){
         return 1;
     }
     
@@ -283,7 +288,9 @@ The following table shows the meaning of the values of ALUOp.
 
        break;
     
-    
+    default:
+        return 1;
+        break;
    }
 
 }
@@ -359,7 +366,8 @@ int ALU_operations(unsigned data1,unsigned data2,unsigned extended_value,unsigne
 /* Read / Write Memory */
 /* 10 Points */
 int rw_memory(unsigned ALUresult,unsigned data2,char MemWrite,char MemRead,unsigned *memdata,unsigned *Mem)
-{
+{   
+    //ENSURE ALU RESULT MEMORY IS WITHIN THE BOUNDS AND A MULTIPLE OF 4 FOR WORDX ALIGNMENT
         /*
             1.  Use the value of MemWrite or MemRead to determine if a memory write 
     operation or memory read operation or neither is occurring. 
@@ -370,6 +378,22 @@ int rw_memory(unsigned ALUresult,unsigned data2,char MemWrite,char MemRead,unsig
     addressed by ALUresult. 
     4.  Return 1 if a halt condition occurs; otherwise, return 0.
         */
+
+    if(MemRead == 1){
+        if(ALUresult % 4 != 0 || ALUresult > 0xFFFF || ALUresult < 0x0000){
+            return 1;
+        }
+    }
+
+    if(MemWrite == 1){
+        if(ALUresult % 4 != 0 || ALUresult > 0xFFFF || ALUresult < 0x0000){
+            return 1;
+        }
+
+    }
+
+    
+
 }
 
 
@@ -380,6 +404,13 @@ void write_register(unsigned r2,unsigned r3,unsigned memdata,unsigned ALUresult,
     /*
         1.  Write the data (ALUresult or memdata) to a register (Reg) addressed by r2 or r3. 
     */
+
+   if(RegDst == 0){
+       //write to r2
+   }else{
+       //write to r3
+   }
+
     
 
 }
@@ -390,7 +421,13 @@ void PC_update(unsigned jsec,unsigned extended_value,char Branch,char Jump,char 
 {
     //1.  Update the program counter (PC). 
     //to access proper memory index need to divide pc by four 
+    if(Jump == 1){
 
+    }else if(Branch == 1 && Zero == 1){
+
+    }else{
+
+    }
     
 
 }
