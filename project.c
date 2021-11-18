@@ -1,31 +1,24 @@
 #include "spimcore.h"
 
-
 /* ALU */
 /* 10 Points */
 void ALU(unsigned A,unsigned B,char ALUControl,unsigned *ALUresult,char *Zero)
 {
     //Wondering if we need to worry about the overflow during operations
-
     //create switch statements for alu operations
-
     switch (ALUControl)
     {
     case 0:
         //perform addition
         *ALUresult = A + B;
-
         break;
     
     case 1:
-
         
         //subtraction
-
         *ALUresult = A-B;
         break;
     case 2:
-
         //if A < B, Z = 1; otherwise, Z = 0 
         if(A < B){
              *ALUresult = 1;
@@ -61,7 +54,6 @@ void ALU(unsigned A,unsigned B,char ALUControl,unsigned *ALUresult,char *Zero)
     default:
         break;
     }
-
     if(ALUresult == 0){
         Zero = 1;
     }
@@ -71,16 +63,18 @@ void ALU(unsigned A,unsigned B,char ALUControl,unsigned *ALUresult,char *Zero)
 /* 10 Points */
 int instruction_fetch(unsigned PC,unsigned *Mem,unsigned *instruction)
 {
+    //make sure the address is word aligned ( aka a mulitple of 4)
     //need to divide pc by four to get the index for mem
-    if(PC>>2 > 65536>>2){
+    if(PC > 0xFFFF || PC < 0x0000){
+        return 1;
+    }
+    if(PC % 4 != 0){
         return 1;
     }
     
     *instruction = Mem[PC>>2];
     return 0;
 }
-
-
 /* instruction partition */
 /* 10 Points */
 void instruction_partition(unsigned instruction, unsigned *op, unsigned *r1,unsigned *r2, unsigned *r3, unsigned *funct, unsigned *offset, unsigned *jsec)
@@ -90,7 +84,6 @@ void instruction_partition(unsigned instruction, unsigned *op, unsigned *r1,unsi
     //Jsec is address for j types
     //func is function for R-format
     //offset is constant/address for I types
-
     //R-format  OP (6 bit) - RS 5 bit - rt 5bit - rd 5 bit - shamt 5 bit - funct 6 bit // 0 opccode
     //I-format op 6 bit - rs 5 bit - rt 5 bit - address/immediate 16 bits   //opcode > 3
     //J format op 6bits - target address 26 bits    //opcode of 2 or 3
@@ -98,13 +91,11 @@ void instruction_partition(unsigned instruction, unsigned *op, unsigned *r1,unsi
         Partition instruction into several parts (op, r1, r2, r3, funct, offset, jsec). 
         2.  Read line 41 to 47 of spimcore.c for more information.
     */
-
    // mask for op code 11111100000000000000000000000000
    unsigned maskOpcode = fromBinary("11111100000000000000000000000000", 32);
    
    //remeber to shift the bits over!
    unsigned opCode = (maskOpcode & instruction) >> (32-26);
-
    if(opCode == 0){
        //r-format instruciton
         //bit mask for rs 00000011111000000000000000000000
@@ -114,7 +105,6 @@ void instruction_partition(unsigned instruction, unsigned *op, unsigned *r1,unsi
         //no shamt pointer so assume this is unneccesary
         //unsigned maskShamt = fromBinary("00000000000000000000011111000000",32);
         unsigned maskFunct = fromBinary("00000000000000000000000000111111",32);
-
         
         *r1 = (maskRS & instruction) >> (32-21);
         *r2 = (maskRT & instruction) >> (32-16);
@@ -123,15 +113,11 @@ void instruction_partition(unsigned instruction, unsigned *op, unsigned *r1,unsi
         *funct = (maskFunct & instruction);
         //since R-type instruction the op code must become the function code
         *op = *funct;
-
-
    }else if(opCode > 3){
-
        // I format instruction
         unsigned maskRS = fromBinary("00000011111000000000000000000000", 32);
         unsigned maskRT = fromBinary("00000000000111110000000000000000",32);
         unsigned maskAddress = fromBinary("00000000000000001111111111111111",32);
-
         *r1 = (maskRS & instruction) >> (32-21);
         *r2 = (maskRT & instruction) >> (32-16);
         //at the end so no need to shift
@@ -144,11 +130,7 @@ void instruction_partition(unsigned instruction, unsigned *op, unsigned *r1,unsi
         *jsec = (maskAddressLong & instruction);
    }
     
-
 }
-
-
-
 /* instruction decode */
 /* 15 Points */
 int instruction_decode(unsigned op,struct_controls *controls)
@@ -218,7 +200,6 @@ The following table shows the meaning of the values of ALUOp.
         controls->ALUOp = 0;
         controls->ALUSrc =1;
         controls->RegWrite = 0;
-
         break;
     case 15:
         //load upper immediate 001111
@@ -256,7 +237,6 @@ The following table shows the meaning of the values of ALUOp.
         controls->ALUSrc = 1;
         controls->RegWrite = 1;
         break;
-
     case 11:
         //set less than immediate unsigned 001011
         controls->RegDst = 0;
@@ -280,26 +260,22 @@ The following table shows the meaning of the values of ALUOp.
         controls->ALUOp = 0;
         controls->ALUSrc = 0;
         controls->RegWrite = 0;
-
        break;
     
-    
+    default:
+        return 1;
+        break;
    }
-
 }
-
 /* Read Register */
 /* 5 Points */
 void read_register(unsigned r1,unsigned r2,unsigned *Reg,unsigned *data1,unsigned *data2)
 {
     //Read the registers addressed by r1 and r2 from Reg, and write the read values 
     //to data1 and data2 respectively.
-
     *data1 = Reg[r1];
     *data2 = Reg[r2];
 }
-
-
 /* Sign Extend */
 /* 10 Points */
 void sign_extend(unsigned offset,unsigned *extended_value)
@@ -322,7 +298,6 @@ void sign_extend(unsigned offset,unsigned *extended_value)
     // as the first 16 bits are already 0's
     *extended_value = offset;
 }
-
 /* ALU operations */
 /* 10 Points */
 int ALU_operations(unsigned data1,unsigned data2,unsigned extended_value,unsigned funct,char ALUOp,char ALUSrc,unsigned *ALUresult,char *Zero)
@@ -345,26 +320,16 @@ int ALU_operations(unsigned data1,unsigned data2,unsigned extended_value,unsigne
     
     // else ALUSrc is deasserted so use data2 and do operations based on ALUOp
     else{
-        unsigned UsedData = data2;
+        unsigned UsedData = extended_value;
         unsigned maskCon = fromBinary("00000000000000000000000000000111",32);
         unsigned UsedCon = (funct & maskCon);
     }
     
-    // An illegal instruction is encountered
-    // UsedCon being the control
-    // If it isn't between 0 and 7
-    // Then it is illegal and will return 1 to halt
-    if(UsedCon > 7 || maskCon < 0){
-        return 1
-    }
-    
-    
-    // Do ALU using the parameters which will fit the type
     ALU(data1, UsedData, UsedCon, *ALUresult, *Zero);
     
-    return 0; 
+    
+    
 }
-
 /* Read / Write Memory */
 /* 10 Points */
 int rw_memory(unsigned ALUresult,unsigned data2,char MemWrite,char MemRead,unsigned *memdata,unsigned *Mem)
@@ -379,25 +344,18 @@ int rw_memory(unsigned ALUresult,unsigned data2,char MemWrite,char MemRead,unsig
     addressed by ALUresult. 
     4.  Return 1 if a halt condition occurs; otherwise, return 0.
         */
-
     if(MemRead == 1){
         if(ALUresult % 4 != 0 || ALUresult > 0xFFFF || ALUresult < 0x0000){
             return 1;
         }
     }
-
     if(MemWrite == 1){
         if(ALUresult % 4 != 0 || ALUresult > 0xFFFF || ALUresult < 0x0000){
             return 1;
         }
-
     }
-
     
-
 }
-
-
 /* Write Register */
 /* 10 Points */
 void write_register(unsigned r2,unsigned r3,unsigned memdata,unsigned ALUresult,char RegWrite,char RegDst,char MemtoReg,unsigned *Reg)
@@ -416,7 +374,7 @@ void write_register(unsigned r2,unsigned r3,unsigned memdata,unsigned ALUresult,
    }
 
 
-   
+
 
    if(RegDst == 0){
        //write to r2
@@ -426,10 +384,8 @@ void write_register(unsigned r2,unsigned r3,unsigned memdata,unsigned ALUresult,
        Reg[r3] = toWrite;
    }
 
-    
 
 }
-
 /* PC update */
 /* 10 Points */
 void PC_update(unsigned jsec,unsigned extended_value,char Branch,char Jump,char Zero,unsigned *PC)
@@ -437,21 +393,22 @@ void PC_update(unsigned jsec,unsigned extended_value,char Branch,char Jump,char 
     //1.  Update the program counter (PC). 
     //to access proper memory index need to divide pc by four 
     if(Jump == 1){
+
         *PC = jsec;
     }else if(Branch == 1 && Zero == 1){
+
         *PC = extended_value;
     }else{
+
         *PC += 4;
     }
-    
+
 
 }
-
 //ADDED FUNCTION TO HELP WITH BIT MASKING
 unsigned fromBinary(char* bit,int n){
     
     unsigned value = 0;
-
     for(int i = 0 ; i < n; i++){
         
        if(bit[i] == '1'){
@@ -459,6 +416,5 @@ unsigned fromBinary(char* bit,int n){
            value += (1 << (n-i-1));
        }
     }
-
     return value;
 }
