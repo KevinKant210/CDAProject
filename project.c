@@ -405,10 +405,24 @@ void write_register(unsigned r2,unsigned r3,unsigned memdata,unsigned ALUresult,
         1.  Write the data (ALUresult or memdata) to a register (Reg) addressed by r2 or r3. 
     */
 
+   if(RegWrite == 0)return;
+
+   unsigned toWrite;
+   if(MemtoReg == 1){
+       toWrite = memdata;
+   }else{
+       toWrite = ALUresult;
+   }
+
+
+   
+
    if(RegDst == 0){
        //write to r2
+       Reg[r2] = toWrite;
    }else{
        //write to r3
+       Reg[r3] = toWrite;
    }
 
     
@@ -422,11 +436,11 @@ void PC_update(unsigned jsec,unsigned extended_value,char Branch,char Jump,char 
     //1.  Update the program counter (PC). 
     //to access proper memory index need to divide pc by four 
     if(Jump == 1){
-
+        *PC = jsec;
     }else if(Branch == 1 && Zero == 1){
-
+        *PC = extended_value;
     }else{
-
+        *PC += 4;
     }
     
 
