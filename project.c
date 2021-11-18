@@ -276,6 +276,7 @@ void read_register(unsigned r1,unsigned r2,unsigned *Reg,unsigned *data1,unsigne
     *data1 = Reg[r1];
     *data2 = Reg[r2];
 }
+
 /* Sign Extend */
 /* 10 Points */
 void sign_extend(unsigned offset,unsigned *extended_value)
@@ -320,12 +321,10 @@ int ALU_operations(unsigned data1,unsigned data2,unsigned extended_value,unsigne
     
     // else ALUSrc is deasserted so use data2 and do operations based on ALUOp
     else{
-        unsigned UsedData = extended_value;
+        unsigned UsedData = data2;
         unsigned maskCon = fromBinary("00000000000000000000000000000111",32);
         unsigned UsedCon = (funct & maskCon);
     }
-    
-     ALU(data1, UsedData, UsedCon, *ALUresult, *Zero);
     
     // An illegal instruction is encountered
     // UsedCon being the control
@@ -333,7 +332,7 @@ int ALU_operations(unsigned data1,unsigned data2,unsigned extended_value,unsigne
     // Then it is illegal and will return 1 to halt
     if(UsedCon > 7 || maskCon < 0){
         return 1
-    }
+     }
 
 
     // Do ALU using the parameters which will fit the type
@@ -362,11 +361,16 @@ int rw_memory(unsigned ALUresult,unsigned data2,char MemWrite,char MemRead,unsig
         if(ALUresult % 4 != 0 || ALUresult > 0xFFFF || ALUresult < 0x0000){
             return 1;
         }
+        
+        *memdata = Mem[ALUresult];
     }
+    
     if(MemWrite == 1){
         if(ALUresult % 4 != 0 || ALUresult > 0xFFFF || ALUresult < 0x0000){
             return 1;
         }
+        
+        Mem[ALUresult] = data2;
     }
     
 }
@@ -378,8 +382,10 @@ void write_register(unsigned r2,unsigned r3,unsigned memdata,unsigned ALUresult,
         1.  Write the data (ALUresult or memdata) to a register (Reg) addressed by r2 or r3. 
     */
 
-   if(RegWrite == 0)return;
-
+   if(RegWrite == 0){
+       return;
+   }
+    
    unsigned toWrite;
    if(MemtoReg == 1){
        toWrite = memdata;
