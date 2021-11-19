@@ -133,7 +133,7 @@ void instruction_partition(unsigned instruction, unsigned *op, unsigned *r1,unsi
         //at the end so no need to shift
         *offset = (maskAddress & instruction);
         *op = opCode;
-        printf("Offset %d", *offset);
+        
    }else{
        //j format instruction
        unsigned maskAddressLong = fromBinary("00000011111111111111111111111111",32);
@@ -213,7 +213,7 @@ The following table shows the meaning of the values of ALUOp.
         controls->MemWrite = 1;
         controls->MemtoReg = 0;
         controls->ALUOp = 0;
-        controls->ALUSrc =1;
+        controls->ALUSrc = 1;
         controls->RegWrite = 0;
         break;
     case 15:
@@ -333,7 +333,7 @@ int ALU_operations(unsigned data1,unsigned data2,unsigned extended_value,unsigne
     5.  Return 1 if a halt condition occurs; otherwise, return 0.
         */
     
-    
+
     unsigned UsedCon;
     unsigned UsedData;
     
@@ -395,16 +395,18 @@ int rw_memory(unsigned ALUresult,unsigned data2,char MemWrite,char MemRead,unsig
         if(ALUresult % 4 != 0 || ALUresult > 0xFFFF || ALUresult < 0x0000){
             return 1;
         }
-        ALUresult = ALUresult >> 2;
+        ALUresult = (ALUresult >> 2);
         *memdata = (Mem[ALUresult] << 24) + (Mem[ALUresult+1] << 16) + (Mem[ALUresult+2] << 8) + (Mem[ALUresult+3]);
-        
+        //printf("%d", *memdata);
     }
     
     if(MemWrite == 1){
         if(ALUresult % 4 != 0 || ALUresult > 0xFFFF || ALUresult < 0x0000){
             return 1;
         }
-        ALUresult = ALUresult >> 2;
+        
+        ALUresult = (ALUresult >> 2);
+        
         unsigned mask = fromBinary("11111111000000000000000000000000",32);
         
         Mem[ALUresult] = (data2 & mask) >> 24;
@@ -421,7 +423,10 @@ int rw_memory(unsigned ALUresult,unsigned data2,char MemWrite,char MemRead,unsig
 
         Mem[ALUresult + 3] = (data2 & mask);
 
+        
+
     }
+    
     
     return 0;
 }
@@ -475,7 +480,7 @@ void PC_update(unsigned jsec,unsigned extended_value,char Branch,char Jump,char 
 
         *PC = (extended_value * 4) + *PC + 4;
 
-        printf("PC %d", *PC);
+        
         
     }else{
 
