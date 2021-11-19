@@ -3,6 +3,8 @@
 
 unsigned fromBinary(char* bit,int n);
 
+unsigned findFunct(unsigned funct);
+
 /* ALU */
 /* 10 Points */
 void ALU(unsigned A,unsigned B,char ALUControl,unsigned *ALUresult,char *Zero)
