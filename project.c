@@ -43,7 +43,7 @@ void ALU(unsigned A,unsigned B,char ALUControl,unsigned *ALUresult,char *Zero)
         break;
     case 4:
         //Z = A AND B
-        *ALUresult = A & B; 
+        *ALUresult = (A & B); 
         break;
     case 5:
         //Z = A OR B 
@@ -310,8 +310,12 @@ void sign_extend(unsigned offset,unsigned *extended_value)
     //i think you need to put the deop character infront of extended value -> *
     if(sign == 1){
         
+<<<<<<< HEAD
         *extended_value = (~offset) + 1;
         printf(" extended %d", *extended_value);
+=======
+        *extended_value = (0xFFFFFFFF & offset);
+>>>>>>> ad640b5ce3fd9f03e910c1b3577ef9b2c448e333
         return;
     }
     
