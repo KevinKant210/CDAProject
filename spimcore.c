@@ -108,8 +108,7 @@ void Step(void)
 {
 	/* fetch instruction from memory */
 	Halt = instruction_fetch(PC,Mem,&instruction);
-	
-	if(Halt) printf("Error 1");
+
 	if(!Halt)
 	{
 		/* partition the instruction */
@@ -117,42 +116,33 @@ void Step(void)
 
 		/* instruction decode */
 		Halt = instruction_decode(op,&controls);
-		if(Halt) printf("Error 2");
 	}
 
 	if(!Halt)
 	{
-		
 		/* read_register */
 		read_register(r1,r2,Reg,&data1,&data2);
-		printf("I made it here\n");
+
 		/* sign_extend */
 		sign_extend(offset,&extended_value);
-		printf("I also  made it here\n");
+
 		/* ALU */
 		Halt = ALU_operations(data1,data2,extended_value,funct,controls.ALUOp,controls.ALUSrc,&ALUresult,&Zero);
-		if(Halt) printf("Error 3");
 	}
 
 	if(!Halt)
 	{
-		printf("I made it here");
 		/* read/write memory */
-
 		Halt = rw_memory(ALUresult,data2,controls.MemWrite,controls.MemRead,&memdata,Mem);
-		if(Halt) printf("Error 4");
 	}
 
 	if(!Halt)
-	{	
-		printf("I made it here 2");
+	{
 		/* write to register */
 		write_register(r2,r3,memdata,ALUresult,controls.RegWrite,controls.RegDst,controls.MemtoReg,Reg);
 
-		printf("I made it here3");
 		/* PC update */
 		PC_update(jsec,extended_value,controls.Branch,controls.Jump,Zero,&PC);
-		if(Halt) printf("Error 5");
 	}
 }
 

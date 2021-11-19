@@ -4,12 +4,16 @@ unsigned fromBinary(char* bit, int n);
 
 int main(){
 
-     
-     unsigned bit = 0b1100;
+     unsigned num = 65533;
+
+    unsigned bit = 0b11111111111111110000000000000000;
+
+
+     unsigned value = bit + num;
+
+
+     printf("%d",value);
     
-     unsigned negative = (~bit);
-     
-     printf("%d %d",bit, negative);
 
     return 0;
 }
