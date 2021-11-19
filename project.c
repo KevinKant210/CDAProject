@@ -307,7 +307,7 @@ void sign_extend(unsigned offset,unsigned *extended_value)
     //i think you need to put the deop character infront of extended value -> *
     if(sign == 1){
         
-        *extended_value = (~offset+1);
+        *extended_value = (0xFFFFFFFF & offset);
         return;
     }
     
