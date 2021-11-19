@@ -310,7 +310,7 @@ void sign_extend(unsigned offset,unsigned *extended_value)
     //i think you need to put the deop character infront of extended value -> *
     if(sign == 1){
         
-        *extended_value = (0xFFFFFFFF & offset);
+        *extended_value = 0xFFFF0000 + offset;
         return;
     }
     
@@ -473,7 +473,7 @@ void PC_update(unsigned jsec,unsigned extended_value,char Branch,char Jump,char 
     }else if(Branch == 1 && Zero == 1){
         
 
-        *PC = (extended_value) + *PC + 4;
+        *PC = (extended_value * 4) + *PC + 4;
 
         printf("PC %d", *PC);
         
