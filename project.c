@@ -133,11 +133,13 @@ void instruction_partition(unsigned instruction, unsigned *op, unsigned *r1,unsi
         //at the end so no need to shift
         *offset = (maskAddress & instruction);
         *op = opCode;
+        printf("Offset %d", *offset);
    }else{
        //j format instruction
        unsigned maskAddressLong = fromBinary("00000011111111111111111111111111",32);
         //at the end so no need to shift
         *jsec = (maskAddressLong & instruction);
+        
         *op = opCode;
    }
 
@@ -228,12 +230,12 @@ The following table shows the meaning of the values of ALUOp.
         break;
     case 4:
         //branch on equal 000100
-        controls->RegDst = 2;
+        controls->RegDst = 0;
         controls->Jump = 0;
         controls->Branch = 1;
         controls->MemRead = 0;
         controls->MemWrite = 0;
-        controls->MemtoReg = 2;
+        controls->MemtoReg = 0;
         controls->ALUOp = 1;
         controls->ALUSrc = 0;
         controls->RegWrite = 0;
@@ -302,18 +304,22 @@ void sign_extend(unsigned offset,unsigned *extended_value)
     // Shift the offset over 15 bits to find sign bit
     unsigned sign = offset >> 15;
     
+    
     // If the sign bit is 1 (value is negative)
     // Then add 16 1 bits to the offset and return
     //i think you need to put the deop character infront of extended value -> *
     if(sign == 1){
         
-        *extended_value = (~offset+1);
+        *extended_value = (~offset) + 1;
+        printf(" extended %d", *extended_value);
         return;
     }
     
     // The extended value will just equal the offset otherwise 
     // as the first 16 bits are already 0's
     *extended_value = offset;
+
+    
 }
 /* ALU operations */
 /* 10 Points */
@@ -459,12 +465,19 @@ void PC_update(unsigned jsec,unsigned extended_value,char Branch,char Jump,char 
 {
     //1.  Update the program counter (PC). 
     //to access proper memory index need to divide pc by four 
+
+    
     if(Jump == 1){
 
-        *PC = jsec;
+        *PC = (jsec << 2);
+        
     }else if(Branch == 1 && Zero == 1){
+        
 
-        *PC = extended_value;
+        *PC = (extended_value * 4)+*PC + 4;
+
+        printf("PC %d", *PC);
+        
     }else{
 
         *PC += 4;

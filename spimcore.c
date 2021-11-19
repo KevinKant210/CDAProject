@@ -125,10 +125,10 @@ void Step(void)
 		
 		/* read_register */
 		read_register(r1,r2,Reg,&data1,&data2);
-		
+		printf("I made it here\n");
 		/* sign_extend */
 		sign_extend(offset,&extended_value);
-		
+		printf("I also  made it here\n");
 		/* ALU */
 		Halt = ALU_operations(data1,data2,extended_value,funct,controls.ALUOp,controls.ALUSrc,&ALUresult,&Zero);
 		if(Halt) printf("Error 3");

@@ -4,9 +4,12 @@ unsigned fromBinary(char* bit, int n);
 
 int main(){
 
-     unsigned maskOpcode = fromBinary("11111100000000000000000000000000",32);
      
+     unsigned bit = 0b1100;
+    
+     unsigned negative = (~bit);
      
+     printf("%d %d",bit, negative);
 
     return 0;
 }
