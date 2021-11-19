@@ -344,7 +344,7 @@ int ALU_operations(unsigned data1,unsigned data2,unsigned extended_value,unsigne
     // If this is a R type
     // Then get the control from the function
     if(ALUOp ==7){
-        UsedCon = findFunc(funct);
+        UsedCon = findFunct(funct);
     }else{
         // Else, use ALUOp as the Control
         UsedCon = ALUOp;
