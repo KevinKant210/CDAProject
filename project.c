@@ -321,8 +321,9 @@ int ALU_operations(unsigned data1,unsigned data2,unsigned extended_value,unsigne
         UsedData = extended_value;
     }
     
-    // else ALUSrc is deasserted so use data2 and do operations based on ALUOp
-    else{
+    // If ALUSrc is deasserted
+    // Then use data2 and do operations based on ALUOp
+    if(ALUSrc == 0){
         UsedData = data2;
     }
     
@@ -337,15 +338,6 @@ int ALU_operations(unsigned data1,unsigned data2,unsigned extended_value,unsigne
     else{
         UsedCon = ALUOp;
     }
-    
-    // An illegal instruction is encountered
-    // UsedCon being the control
-    // If it isn't between 0 and 7
-    // Then it is illegal and will return 1 to halt
-    if(UsedCon > 7 || UsedCon < 0){
-        return 1
-     }
-
 
     // Do ALU using the parameters which will fit the type
     ALU(data1, UsedData, UsedCon, *ALUresult, *Zero);
