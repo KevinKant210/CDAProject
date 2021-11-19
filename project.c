@@ -69,6 +69,7 @@ void ALU(unsigned A,unsigned B,char ALUControl,unsigned *ALUresult,char *Zero)
 /* 10 Points */
 int instruction_fetch(unsigned PC,unsigned *Mem,unsigned *instruction)
 {
+    
     //make sure the address is word aligned ( aka a mulitple of 4)
     //need to divide pc by four to get the index for mem
     if(PC > 0xFFFF || PC < 0x0000){
@@ -380,11 +381,16 @@ int rw_memory(unsigned ALUresult,unsigned data2,char MemWrite,char MemRead,unsig
     addressed by ALUresult. 
     4.  Return 1 if a halt condition occurs; otherwise, return 0.
         */
+
+      // printf("Data %d  ALUResult %d\n", data2,ALUresult);
+
+    
+
     if(MemRead == 1){
         if(ALUresult % 4 != 0 || ALUresult > 0xFFFF || ALUresult < 0x0000){
             return 1;
         }
-
+        ALUresult = ALUresult >> 2;
         *memdata = (Mem[ALUresult] << 24) + (Mem[ALUresult+1] << 16) + (Mem[ALUresult+2] << 8) + (Mem[ALUresult+3]);
         
     }
@@ -393,7 +399,7 @@ int rw_memory(unsigned ALUresult,unsigned data2,char MemWrite,char MemRead,unsig
         if(ALUresult % 4 != 0 || ALUresult > 0xFFFF || ALUresult < 0x0000){
             return 1;
         }
-        
+        ALUresult = ALUresult >> 2;
         unsigned mask = fromBinary("11111111000000000000000000000000",32);
         
         Mem[ALUresult] = (data2 & mask) >> 24;
@@ -412,6 +418,7 @@ int rw_memory(unsigned ALUresult,unsigned data2,char MemWrite,char MemRead,unsig
 
     }
     
+    return 0;
 }
 /* Write Register */
 /* 10 Points */

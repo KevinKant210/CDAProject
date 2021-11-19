@@ -144,10 +144,12 @@ void Step(void)
 	}
 
 	if(!Halt)
-	{
+	{	
+		printf("I made it here 2");
 		/* write to register */
 		write_register(r2,r3,memdata,ALUresult,controls.RegWrite,controls.RegDst,controls.MemtoReg,Reg);
 
+		printf("I made it here3");
 		/* PC update */
 		PC_update(jsec,extended_value,controls.Branch,controls.Jump,Zero,&PC);
 		if(Halt) printf("Error 5");
