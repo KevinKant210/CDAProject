@@ -343,16 +343,14 @@ int ALU_operations(unsigned data1,unsigned data2,unsigned extended_value,unsigne
     // Then get the control from the function
     if(ALUOp ==7){
         UsedCon = findFunc(funct);
-    }
-    
-    // Else, use ALUOp as the Control
-    else{
+    }else{
+        // Else, use ALUOp as the Control
         UsedCon = ALUOp;
     }
     
     // If it will try to do something that is not in the ALU
     // Then it will halt
-    if(usedCon = 9){
+    if(UsedCon = 9){
         return 1;
     }
     
@@ -479,7 +477,7 @@ unsigned fromBinary(char* bit,int n){
 
 // ADDED FUNCTION TO FIND WHAT FUNC WILL DO
 unsigned findFunct(unsigned funct){
-    swtich(funct){
+    switch(funct){
         
         // Function says to s.l.l - 000000
         // return 6 (s.l.l) for the ALU
