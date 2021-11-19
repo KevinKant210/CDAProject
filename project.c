@@ -342,15 +342,20 @@ int ALU_operations(unsigned data1,unsigned data2,unsigned extended_value,unsigne
     // If this is a R type
     // Then get the control from the function
     if(ALUOp ==7){
-        unsigned maskCon = fromBinary("00000000000000000000000000000111",32);
-        UsedCon = (maskCon & funct);
+        UsedCon = findFunc(funct);
     }
     
     // Else, use ALUOp as the Control
     else{
         UsedCon = ALUOp;
     }
-
+    
+    // If it will try to do something that is not in the ALU
+    // Then it will halt
+    if(usedCon = 9){
+        return 1;
+    }
+    
     // Do ALU using the parameters which will fit the type
     ALU(data1, UsedData, UsedCon, *ALUresult, *Zero);
 
@@ -470,4 +475,55 @@ unsigned fromBinary(char* bit,int n){
        }
     }
     return value;
+}
+
+// ADDED FUNCTION TO FIND WHAT FUNC WILL DO
+unsigned findFunct(unsigned funct){
+    swtich(funct){
+        
+        // Function says to s.l.l - 000000
+        // return 6 (s.l.l) for the ALU
+        case 0:
+            return 6;
+        
+        // Function says to add - 100000
+        // return 0 (add) for the ALU
+        case 32:
+            return 0;
+        
+        // Function says to sub - 100010
+        // return 1 (sub) for the ALU
+        case 34:
+            return 1;
+        
+        // Function says to and - 100100
+        // return 4 (and) for the ALU
+        case 36:
+            return 4;
+        
+        // Function says to or - 100101
+        // return 5 (or) for the ALU
+        case 37:
+            return 5;
+        
+        // Function says to not - 100111
+        // return 7 (not) for the ALU
+        case 39:
+            return 7;
+        
+        // Function says to s.l.t - 101010
+        // return 2 (s.l.t) for the ALU
+        case 42:
+            return 2;
+        
+        // Function says to s.l.t.u - 101011
+        // return 3 (s.l.t.u) for the ALU
+        case 43:
+            return 3;
+        
+        
+        // Return 9 so nothing will be done in ALU
+        default:
+            return 9;
+    }
 }
