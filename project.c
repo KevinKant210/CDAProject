@@ -396,7 +396,7 @@ int rw_memory(unsigned ALUresult,unsigned data2,char MemWrite,char MemRead,unsig
             return 1;
         }
         ALUresult = (ALUresult >> 2);
-        *memdata = (Mem[ALUresult] << 24) + (Mem[ALUresult+1] << 16) + (Mem[ALUresult+2] << 8) + (Mem[ALUresult+3]);
+        *memdata = Mem[ALUresult];
         //printf("%d", *memdata);
     }
     
@@ -404,24 +404,8 @@ int rw_memory(unsigned ALUresult,unsigned data2,char MemWrite,char MemRead,unsig
         if(ALUresult % 4 != 0 || ALUresult > 0xFFFF || ALUresult < 0x0000){
             return 1;
         }
-        
-        ALUresult = (ALUresult >> 2);
-        
-        unsigned mask = fromBinary("11111111000000000000000000000000",32);
-        
-        Mem[ALUresult] = (data2 & mask) >> 24;
-
-        mask = fromBinary("00000000111111110000000000000000",32);
-
-        Mem[ALUresult+1] = (data2 & mask) >> 16;
-
-        mask = fromBinary("00000000000000001111111100000000",32);
-
-        Mem[ALUresult + 2] = (data2 & mask) >> 8;
-
-        mask = fromBinary("00000000000000000000000011111111",32);
-
-        Mem[ALUresult + 3] = (data2 & mask);
+        ALUresult = ALUresult >> 2;
+        Mem[ALUresult] = data2;
 
         
 
