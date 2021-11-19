@@ -11,6 +11,7 @@ void ALU(unsigned A,unsigned B,char ALUControl,unsigned *ALUresult,char *Zero)
 {
     //Wondering if we need to worry about the overflow during operations
     //create switch statements for alu operations
+    
     switch (ALUControl)
     {
     case 0:
@@ -60,7 +61,7 @@ void ALU(unsigned A,unsigned B,char ALUControl,unsigned *ALUresult,char *Zero)
     }
 
     if(*ALUresult == 0){
-        Zero = 1;
+        *Zero = 1;
     }
 }
 
@@ -109,7 +110,7 @@ void instruction_partition(unsigned instruction, unsigned *op, unsigned *r1,unsi
         //bit mask for rs 00000011111000000000000000000000
         unsigned maskRS = fromBinary("00000011111000000000000000000000", 32);
         unsigned maskRT = fromBinary("00000000000111110000000000000000",32);
-        unsigned maskRD = fromBinary("0000000000000000111110000000000",32);
+        unsigned maskRD = fromBinary("00000000000000001111100000000000",32);
         //no shamt pointer so assume this is unneccesary
         //unsigned maskShamt = fromBinary("00000000000000000000011111000000",32);
         unsigned maskFunct = fromBinary("00000000000000000000000000111111",32);
@@ -120,7 +121,7 @@ void instruction_partition(unsigned instruction, unsigned *op, unsigned *r1,unsi
         //at the end so no need to shift
         *funct = (maskFunct & instruction);
         //since R-type instruction the op code must become the function code
-        *op = *funct;
+        *op = opCode;
    }else if(opCode > 3){
        // I format instruction
         unsigned maskRS = fromBinary("00000011111000000000000000000000", 32);
@@ -159,7 +160,7 @@ The following table shows the meaning of the values of ALUOp.
  
 3.  Return 1 if a halt condition occurs; otherwise, return 0. 
     */
-   //printf("%d", op);
+   
    switch ((int)op)
    {
    case 0:
@@ -326,7 +327,7 @@ int ALU_operations(unsigned data1,unsigned data2,unsigned extended_value,unsigne
     5.  Return 1 if a halt condition occurs; otherwise, return 0.
         */
     
-    printf("%d", ALUSrc);
+    
     unsigned UsedCon;
     unsigned UsedData;
     
@@ -419,7 +420,8 @@ void write_register(unsigned r2,unsigned r3,unsigned memdata,unsigned ALUresult,
     /*
         1.  Write the data (ALUresult or memdata) to a register (Reg) addressed by r2 or r3. 
     */
-
+   
+   
    if(RegWrite == 0){
        return;
    }
