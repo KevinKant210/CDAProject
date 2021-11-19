@@ -108,7 +108,8 @@ void Step(void)
 {
 	/* fetch instruction from memory */
 	Halt = instruction_fetch(PC,Mem,&instruction);
-
+	
+	
 	if(!Halt)
 	{
 		/* partition the instruction */
@@ -116,6 +117,7 @@ void Step(void)
 
 		/* instruction decode */
 		Halt = instruction_decode(op,&controls);
+		
 	}
 
 	if(!Halt)
@@ -128,12 +130,14 @@ void Step(void)
 
 		/* ALU */
 		Halt = ALU_operations(data1,data2,extended_value,funct,controls.ALUOp,controls.ALUSrc,&ALUresult,&Zero);
+		
 	}
 
 	if(!Halt)
 	{
 		/* read/write memory */
 		Halt = rw_memory(ALUresult,data2,controls.MemWrite,controls.MemRead,&memdata,Mem);
+		
 	}
 
 	if(!Halt)
@@ -143,6 +147,7 @@ void Step(void)
 
 		/* PC update */
 		PC_update(jsec,extended_value,controls.Branch,controls.Jump,Zero,&PC);
+		
 	}
 }
 

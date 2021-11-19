@@ -4,14 +4,10 @@ unsigned fromBinary(char* bit, int n);
 
 int main(){
 
-    int array[15];
-    array[10] = 100;
-    
-    int number = 10;
-    int* value = &number;
-    testFunction(value);
+     unsigned maskOpcode = fromBinary("11111100000000000000000000000000",32);
+     
+     
 
-    printf("%d",number);
     return 0;
 }
 

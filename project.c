@@ -2,6 +2,7 @@
 
 
 unsigned fromBinary(char* bit,int n);
+
 /* ALU */
 /* 10 Points */
 void ALU(unsigned A,unsigned B,char ALUControl,unsigned *ALUresult,char *Zero)
@@ -94,10 +95,13 @@ void instruction_partition(unsigned instruction, unsigned *op, unsigned *r1,unsi
         2.  Read line 41 to 47 of spimcore.c for more information.
     */
    // mask for op code 11111100000000000000000000000000
-   unsigned maskOpcode = fromBinary("11111100000000000000000000000000", 32);
+
+   unsigned maskOpcode = fromBinary("11111100000000000000000000000000",32);
+   
    
    //remeber to shift the bits over!
-   unsigned opCode = (maskOpcode & instruction) >> (32-26);
+   unsigned opCode = (instruction&maskOpcode) >> (26);
+   
    if(opCode == 0){
        //r-format instruciton
         //bit mask for rs 00000011111000000000000000000000
@@ -108,9 +112,9 @@ void instruction_partition(unsigned instruction, unsigned *op, unsigned *r1,unsi
         //unsigned maskShamt = fromBinary("00000000000000000000011111000000",32);
         unsigned maskFunct = fromBinary("00000000000000000000000000111111",32);
         
-        *r1 = (maskRS & instruction) >> (32-21);
-        *r2 = (maskRT & instruction) >> (32-16);
-        *r3 = (maskRD & instruction) >> (32-11);
+        *r1 = (maskRS & instruction) >> (21);
+        *r2 = (maskRT & instruction) >> (16);
+        *r3 = (maskRD & instruction) >> (11);
         //at the end so no need to shift
         *funct = (maskFunct & instruction);
         //since R-type instruction the op code must become the function code
@@ -120,17 +124,20 @@ void instruction_partition(unsigned instruction, unsigned *op, unsigned *r1,unsi
         unsigned maskRS = fromBinary("00000011111000000000000000000000", 32);
         unsigned maskRT = fromBinary("00000000000111110000000000000000",32);
         unsigned maskAddress = fromBinary("00000000000000001111111111111111",32);
-        *r1 = (maskRS & instruction) >> (32-21);
-        *r2 = (maskRT & instruction) >> (32-16);
+        *r1 = (maskRS & instruction) >> (21);
+        *r2 = (maskRT & instruction) >> (16);
         //at the end so no need to shift
-        *offset = (maskAddress & instruction)
-        ;
+        *offset = (maskAddress & instruction);
+        *op = opCode;
    }else{
        //j format instruction
        unsigned maskAddressLong = fromBinary("00000011111111111111111111111111",32);
         //at the end so no need to shift
         *jsec = (maskAddressLong & instruction);
+        *op = opCode;
    }
+
+   
     
 }
 /* instruction decode */
@@ -150,8 +157,8 @@ The following table shows the meaning of the values of ALUOp.
  
 3.  Return 1 if a halt condition occurs; otherwise, return 0. 
     */
-   
-   switch (op)
+   //printf("%d", op);
+   switch ((int)op)
    {
    case 0:
         //r-type so we make alu op 7
@@ -167,7 +174,7 @@ The following table shows the meaning of the values of ALUOp.
        controls->RegWrite = 1;
     
        break;
-   case 0x8:
+   case 8:
         //add immediate is occuring
         controls->RegDst = 0;
         controls->Jump = 0;
@@ -178,7 +185,7 @@ The following table shows the meaning of the values of ALUOp.
         controls->MemWrite = 0;
         controls->ALUSrc = 1;
         controls->RegWrite = 1;
-   
+        break;
     case 35:
         //a load word is occuring 100011
         controls->RegDst = 0;
@@ -262,12 +269,15 @@ The following table shows the meaning of the values of ALUOp.
         controls->ALUOp = 0;
         controls->ALUSrc = 0;
         controls->RegWrite = 0;
+
        break;
     
     default:
         return 1;
-        break;
+       
    }
+
+   return 0;
 }
 /* Read Register */
 /* 5 Points */
@@ -447,6 +457,7 @@ void PC_update(unsigned jsec,unsigned extended_value,char Branch,char Jump,char 
 
 
 }
+
 //ADDED FUNCTION TO HELP WITH BIT MASKING
 unsigned fromBinary(char* bit,int n){
     
