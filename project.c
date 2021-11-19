@@ -26,8 +26,9 @@ void ALU(unsigned A,unsigned B,char ALUControl,unsigned *ALUresult,char *Zero)
         break;
     case 2:
         //if A < B, Z = 1; otherwise, Z = 0 
-        if(A < B){
+        if((int) A < (int) B){
              *ALUresult = 1;
+             
         }else{
             *ALUresult = 0;
         }
@@ -387,7 +388,7 @@ int rw_memory(unsigned ALUresult,unsigned data2,char MemWrite,char MemRead,unsig
     4.  Return 1 if a halt condition occurs; otherwise, return 0.
         */
 
-      // printf("Data %d  ALUResult %d\n", data2,ALUresult);
+      
 
     
 
@@ -397,7 +398,7 @@ int rw_memory(unsigned ALUresult,unsigned data2,char MemWrite,char MemRead,unsig
         }
         ALUresult = (ALUresult >> 2);
         *memdata = Mem[ALUresult];
-        //printf("%d", *memdata);
+        
     }
     
     if(MemWrite == 1){
