@@ -56,10 +56,10 @@ void ALU(unsigned A,unsigned B,char ALUControl,unsigned *ALUresult,char *Zero)
         //Z = NOT A 
         *ALUresult = ~A;
         break;
-    default:
-        break;
+    
     }
-    if(ALUresult == 0){
+
+    if(*ALUresult == 0){
         Zero = 1;
     }
 }
@@ -305,7 +305,7 @@ void sign_extend(unsigned offset,unsigned *extended_value)
     //i think you need to put the deop character infront of extended value -> *
     if(sign == 1){
         
-        *extended_value = (0xFFFF0000 | offset);
+        *extended_value = (~offset+1);
         return;
     }
     
@@ -326,6 +326,7 @@ int ALU_operations(unsigned data1,unsigned data2,unsigned extended_value,unsigne
     5.  Return 1 if a halt condition occurs; otherwise, return 0.
         */
     
+    printf("%d", ALUSrc);
     unsigned UsedCon;
     unsigned UsedData;
     
@@ -343,7 +344,7 @@ int ALU_operations(unsigned data1,unsigned data2,unsigned extended_value,unsigne
     
     // If this is a R type
     // Then get the control from the function
-    if(ALUOp ==7){
+    if(ALUOp == 7){
         UsedCon = findFunct(funct);
     }else{
         // Else, use ALUOp as the Control
@@ -352,12 +353,12 @@ int ALU_operations(unsigned data1,unsigned data2,unsigned extended_value,unsigne
     
     // If it will try to do something that is not in the ALU
     // Then it will halt
-    if(UsedCon = 9){
+    if(UsedCon > 7){
         return 1;
     }
     
     // Do ALU using the parameters which will fit the type
-    ALU(data1, UsedData, UsedCon, *ALUresult, *Zero);
+    ALU(data1, UsedData, UsedCon, ALUresult, Zero);
 
     return 0;
     
